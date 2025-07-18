@@ -1,0 +1,19 @@
+{
+  "name": "mcpvault-site",
+  "version": "0.1.0",
+  "description": "MCPVault - Enterprise MCP Compliance Platform Landing Page",
+  "private": true,
+  "scripts": {
+    "dev": "npx http-server . -p 3000",
+    "build": "echo 'Static site - no build required'"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "compliance",
+    "enterprise",
+    "security"
+  ],
+  "author": "MCPVault Team",
+  "license": "MIT"
+}
