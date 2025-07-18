@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace MCPVault.Domain.Entities
 {
@@ -23,5 +24,8 @@ namespace MCPVault.Domain.Entities
         public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
         public virtual ICollection<Session> Sessions { get; set; } = new List<Session>();
         public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
+
+        // Computed property for easy access to role IDs
+        public Guid[] RoleIds => UserRoles?.Select(ur => ur.RoleId).ToArray() ?? Array.Empty<Guid>();
     }
 }
