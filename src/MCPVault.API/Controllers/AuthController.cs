@@ -28,7 +28,7 @@ namespace MCPVault.API.Controllers
         {
             try
             {
-                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                var ipAddress = HttpContext.Connection?.RemoteIpAddress?.ToString();
                 var result = await _authService.LoginAsync(request.Email, request.Password, ipAddress);
 
                 if (!result.IsSuccess)
