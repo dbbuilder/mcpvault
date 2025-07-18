@@ -45,6 +45,11 @@ namespace MCPVault.API.Tests.Controllers
             _mockAuthService.Setup(s => s.LoginAsync(loginRequest.Email, loginRequest.Password, It.IsAny<string>()))
                 .ReturnsAsync(loginResult);
 
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext()
+            };
+
             // Act
             var result = await _controller.Login(loginRequest);
 
@@ -72,6 +77,11 @@ namespace MCPVault.API.Tests.Controllers
 
             _mockAuthService.Setup(s => s.LoginAsync(loginRequest.Email, loginRequest.Password, It.IsAny<string>()))
                 .ReturnsAsync(loginResult);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext()
+            };
 
             // Act
             var result = await _controller.Login(loginRequest);
