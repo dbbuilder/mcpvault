@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - MCPVault</title>
+    <meta name="description" content="Complete documentation for MCPVault - API references, guides, and examples.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="h-full bg-white" x-data="{ mobileMenuOpen: false }">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 justify-between">
+                <div class="flex">
+                    <div class="flex flex-shrink-0 items-center">
+                        <a href="/" class="flex items-center space-x-2">
+                            <img class="h-8 w-auto" src="/images/logo.svg" alt="MCPVault">
+                            <span class="text-xl font-bold text-gray-900">MCPVault</span>
+                        </a>
+                    </div>
+                    <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
+                        <a href="/docs.html" class="inline-flex items-center border-b-2 border-blue-500 px-1 pt-1 text-sm font-medium text-gray-900">Documentation</a>
+                        <a href="/#features" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Features</a>
+                        <a href="/#pricing" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Pricing</a>
+                        <a href="/blog.html" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Blog</a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <a href="https://github.com/dbbuilder/mcpvault" class="text-gray-500 hover:text-gray-700">
+                        <span class="sr-only">GitHub</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="/demo.html" class="ml-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
+                        Start Free Trial
+                    </a>
+                </div>
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" @click="mobileMenuOpen = !mobileMenuOpen" class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500">
+                        <span class="sr-only">Open main menu</span>
+                        <svg x-show="!mobileMenuOpen" class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <svg x-show="mobileMenuOpen" x-cloak class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Mobile menu -->
+        <div x-show="mobileMenuOpen" x-cloak class="sm:hidden">
+            <div class="space-y-1 pb-3 pt-2">
+                <a href="/docs.html" class="block border-l-4 border-blue-500 bg-blue-50 py-2 pl-3 pr-4 text-base font-medium text-blue-700">Documentation</a>
+                <a href="/#features" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">Features</a>
+                <a href="/#pricing" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">Pricing</a>
+                <a href="/blog.html" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">Blog</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8 py-12">
+            <!-- Sidebar -->
+            <div class="lg:col-span-3" x-data="{ activeSection: 'getting-started' }">
+                <nav class="sticky top-24 space-y-1">
+                    <h3 class="px-3 text-sm font-semibold text-gray-900">Getting Started</h3>
+                    <a href="#installation" @click="activeSection = 'installation'" 
+                       :class="activeSection === 'installation' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+                       class="group flex items-center border-l-4 px-3 py-2 text-sm font-medium">
+                        Installation
+                    </a>
+                    <a href="#quick-start" @click="activeSection = 'quick-start'"
+                       :class="activeSection === 'quick-start' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+                       class="group flex items-center border-l-4 px-3 py-2 text-sm font-medium">
+                        Quick Start
+                    </a>
+                    <a href="#configuration" @click="activeSection = 'configuration'"
+                       :class="activeSection === 'configuration' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+                       class="group flex items-center border-l-4 px-3 py-2 text-sm font-medium">
+                        Configuration
+                    </a>
+                    
+                    <h3 class="mt-8 px-3 text-sm font-semibold text-gray-900">API Reference</h3>
+                    <a href="#authentication" @click="activeSection = 'authentication'"
+                       :class="activeSection === 'authentication' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+                       class="group flex items-center border-l-4 px-3 py-2 text-sm font-medium">
+                        Authentication
+                    </a>
+                    <a href="#servers" @click="activeSection = 'servers'"
+                       :class="activeSection === 'servers' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+                       class="group flex items-center border-l-4 px-3 py-2 text-sm font-medium">
+                        Server Management
+                    </a>
+                    <a href="#monitoring" @click="activeSection = 'monitoring'"
+                       :class="activeSection === 'monitoring' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+                       class="group flex items-center border-l-4 px-3 py-2 text-sm font-medium">
+                        Monitoring
+                    </a>
+                    
+                    <h3 class="mt-8 px-3 text-sm font-semibold text-gray-900">Guides</h3>
+                    <a href="#compliance" @click="activeSection = 'compliance'"
+                       :class="activeSection === 'compliance' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+                       class="group flex items-center border-l-4 px-3 py-2 text-sm font-medium">
+                        Compliance Setup
+                    </a>
+                    <a href="#best-practices" @click="activeSection = 'best-practices'"
+                       :class="activeSection === 'best-practices' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+                       class="group flex items-center border-l-4 px-3 py-2 text-sm font-medium">
+                        Best Practices
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Content -->
+            <main class="lg:col-span-9">
+                <div class="prose prose-blue max-w-none">
+                    <h1>MCPVault Documentation</h1>
+                    <p class="lead">Welcome to the MCPVault documentation. Here you'll find everything you need to secure your Model Context Protocol infrastructure.</p>
+
+                    <h2 id="installation">Installation</h2>
+                    <p>MCPVault can be installed via npm, Docker, or from source. Choose the method that best fits your deployment environment.</p>
+                    
+                    <h3>NPM Installation</h3>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code># Install globally
+npm install -g @mcpvault/cli
+
+# Or add to your project
+npm install @mcpvault/sdk</code></pre>
+
+                    <h3>Docker Installation</h3>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code># Pull the latest image
+docker pull mcpvault/server:latest
+
+# Run with default configuration
+docker run -p 8080:8080 mcpvault/server:latest</code></pre>
+
+                    <h2 id="quick-start">Quick Start</h2>
+                    <p>Get MCPVault up and running in minutes with our quick start guide.</p>
+                    
+                    <ol>
+                        <li>Initialize MCPVault in your project directory:</li>
+                    </ol>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4"><code>mcpvault init</code></pre>
+                    
+                    <ol start="2">
+                        <li>Configure your compliance requirements:</li>
+                    </ol>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4"><code>mcpvault config set compliance.frameworks soc2,hipaa</code></pre>
+                    
+                    <ol start="3">
+                        <li>Start the MCPVault proxy:</li>
+                    </ol>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4"><code>mcpvault start</code></pre>
+
+                    <h2 id="configuration">Configuration</h2>
+                    <p>MCPVault uses a YAML configuration file for all settings. Here's a complete example:</p>
+                    
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code># mcpvault.yaml
+version: 1.0
+server:
+  host: 0.0.0.0
+  port: 8080
+  tls:
+    enabled: true
+    cert: /path/to/cert.pem
+    key: /path/to/key.pem
+
+auth:
+  providers:
+    - type: oauth2
+      issuer: https://auth.example.com
+    - type: api_key
+      header: X-API-Key
+
+compliance:
+  frameworks:
+    - soc2
+    - hipaa
+    - iso27001
+  
+monitoring:
+  enabled: true
+  metrics_port: 9090
+  logs:
+    level: info
+    format: json</code></pre>
+
+                    <h2 id="authentication">Authentication</h2>
+                    <p>MCPVault supports multiple authentication methods to secure your MCP servers.</p>
+                    
+                    <h3>API Key Authentication</h3>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code>curl -H "X-API-Key: your-api-key" \
+     https://api.mcpvault.com/v1/servers</code></pre>
+                    
+                    <h3>OAuth 2.0</h3>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code>curl -H "Authorization: Bearer your-jwt-token" \
+     https://api.mcpvault.com/v1/servers</code></pre>
+
+                    <h2 id="servers">Server Management</h2>
+                    <p>Manage your MCP servers through the MCPVault API.</p>
+                    
+                    <h3>List Servers</h3>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code>GET /v1/servers
+
+Response:
+{
+  "servers": [
+    {
+      "id": "srv_123",
+      "name": "production-mcp",
+      "endpoint": "mcp://prod.example.com:8443",
+      "status": "healthy",
+      "compliance": ["soc2", "hipaa"]
+    }
+  ]
+}</code></pre>
+
+                    <h3>Register New Server</h3>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code>POST /v1/servers
+Content-Type: application/json
+
+{
+  "name": "staging-mcp",
+  "endpoint": "mcp://staging.example.com:8443",
+  "compliance_requirements": ["soc2"]
+}</code></pre>
+
+                    <h2 id="monitoring">Monitoring</h2>
+                    <p>Monitor all MCP server interactions in real-time.</p>
+                    
+                    <h3>Metrics Endpoint</h3>
+                    <p>Prometheus-compatible metrics are exposed at <code>/metrics</code>:</p>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code># HELP mcpvault_requests_total Total number of requests
+# TYPE mcpvault_requests_total counter
+mcpvault_requests_total{server="prod-mcp",status="success"} 12453
+
+# HELP mcpvault_request_duration_seconds Request duration
+# TYPE mcpvault_request_duration_seconds histogram
+mcpvault_request_duration_seconds_bucket{le="0.1"} 8953</code></pre>
+
+                    <h2 id="compliance">Compliance Setup</h2>
+                    <p>Configure MCPVault for your compliance requirements.</p>
+                    
+                    <h3>SOC2 Configuration</h3>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code>mcpvault compliance enable soc2
+mcpvault compliance configure soc2 \
+  --audit-retention 7y \
+  --encryption aes-256-gcm \
+  --access-reviews quarterly</code></pre>
+
+                    <h3>HIPAA Configuration</h3>
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto"><code>mcpvault compliance enable hipaa
+mcpvault compliance configure hipaa \
+  --phi-encryption required \
+  --access-logs detailed \
+  --breach-notification enabled</code></pre>
+
+                    <h2 id="best-practices">Best Practices</h2>
+                    <p>Follow these best practices for optimal security and performance.</p>
+                    
+                    <h3>Security Best Practices</h3>
+                    <ul>
+                        <li>Always use TLS for all connections</li>
+                        <li>Rotate API keys regularly (recommended: every 90 days)</li>
+                        <li>Enable audit logging for all production environments</li>
+                        <li>Use separate credentials for each environment</li>
+                        <li>Implement rate limiting to prevent abuse</li>
+                    </ul>
+                    
+                    <h3>Performance Optimization</h3>
+                    <ul>
+                        <li>Use connection pooling for database connections</li>
+                        <li>Enable caching for frequently accessed data</li>
+                        <li>Monitor resource usage and scale accordingly</li>
+                        <li>Use regional deployments for global applications</li>
+                    </ul>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-24 bg-gray-50">
+        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div class="border-t border-gray-200 pt-8">
+                <p class="text-center text-sm text-gray-500">
+                    &copy; 2024 MCPVault. All rights reserved. | 
+                    <a href="/privacy.html" class="hover:text-gray-900">Privacy</a> | 
+                    <a href="/terms.html" class="hover:text-gray-900">Terms</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
