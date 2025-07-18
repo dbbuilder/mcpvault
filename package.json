@@ -1,0 +1,26 @@
+{
+  "name": "mcpvault",
+  "version": "0.1.0",
+  "description": "Enterprise-grade MCP access management platform",
+  "scripts": {
+    "docker:up": "docker-compose --env-file .env.docker up -d",
+    "docker:down": "docker-compose --env-file .env.docker down",
+    "docker:clean": "docker-compose --env-file .env.docker down -v",
+    "docker:logs": "docker-compose --env-file .env.docker logs -f",
+    "docker:status": "docker-compose --env-file .env.docker ps",
+    "docker:restart": "npm run docker:down && npm run docker:up",
+    "db:migrate": "echo 'TODO: Implement database migrations'",
+    "test": "dotnet test",
+    "build": "dotnet build",
+    "start": "dotnet run --project src/MCPVault.API/MCPVault.API.csproj"
+  },
+  "keywords": [
+    "mcp",
+    "security",
+    "enterprise",
+    "access-management"
+  ],
+  "author": "MCPVault Team",
+  "license": "UNLICENSED",
+  "private": true
+}
