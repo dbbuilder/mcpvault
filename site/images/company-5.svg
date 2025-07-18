@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M20 10L25 20L20 30L15 20Z" fill="#6B7280"/>
+  <path d="M15 20L10 15M25 20L30 15M15 20L10 25M25 20L30 25" stroke="#6B7280" stroke-width="1.5"/>
+  <rect x="40" y="18" width="65" height="4" rx="2" fill="#6B7280" opacity="0.5"/>
+  <text x="32" y="35" font-family="Arial, sans-serif" font-size="8" fill="#6B7280">MedTech AI</text>
+</svg>
