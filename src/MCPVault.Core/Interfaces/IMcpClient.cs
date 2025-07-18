@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MCPVault.Core.MCP;
+using MCPVault.Core.MCP.Models;
 
 namespace MCPVault.Core.Interfaces
 {
@@ -20,5 +21,9 @@ namespace MCPVault.Core.Interfaces
         
         Task<List<McpPrompt>> GetPromptsAsync();
         Task<McpPromptResult> GetPromptAsync(string name, Dictionary<string, object> arguments);
+        
+        // New methods for server registry support
+        void ConfigureConnection(McpConnectionInfo connectionInfo, McpCredentials? credentials = null);
+        Task<McpToolResponse> SendRequestAsync(McpToolRequest request);
     }
 }

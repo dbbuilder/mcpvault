@@ -16,7 +16,7 @@ namespace MCPVault.Core.Tests.MCP
     public class McpProxyServiceTests
     {
         private readonly Mock<IHttpClientFactory> _httpClientFactoryMock;
-        private readonly Mock<IMcpServerRepository> _mcpServerRepositoryMock;
+        private readonly Mock<Domain.Interfaces.IMcpServerRepository> _mcpServerRepositoryMock;
         private readonly Mock<IKeyVaultService> _keyVaultServiceMock;
         private readonly Mock<IAuditService> _auditServiceMock;
         private readonly Mock<ILogger<McpProxyService>> _loggerMock;
@@ -25,7 +25,7 @@ namespace MCPVault.Core.Tests.MCP
         public McpProxyServiceTests()
         {
             _httpClientFactoryMock = new Mock<IHttpClientFactory>();
-            _mcpServerRepositoryMock = new Mock<IMcpServerRepository>();
+            _mcpServerRepositoryMock = new Mock<Domain.Interfaces.IMcpServerRepository>();
             _keyVaultServiceMock = new Mock<IKeyVaultService>();
             _auditServiceMock = new Mock<IAuditService>();
             _loggerMock = new Mock<ILogger<McpProxyService>>();
@@ -45,7 +45,7 @@ namespace MCPVault.Core.Tests.MCP
             var userId = Guid.NewGuid();
             var orgId = Guid.NewGuid();
 
-            var server = new McpServer
+            var server = new Domain.Entities.McpServer
             {
                 Id = serverId,
                 Name = "Test MCP Server",
@@ -98,7 +98,7 @@ namespace MCPVault.Core.Tests.MCP
             var userId = Guid.NewGuid();
             var orgId = Guid.NewGuid();
 
-            var server = new McpServer
+            var server = new Domain.Entities.McpServer
             {
                 Id = serverId,
                 Name = "Inactive Server",
@@ -146,7 +146,7 @@ namespace MCPVault.Core.Tests.MCP
             var userId = Guid.NewGuid();
             var orgId = Guid.NewGuid();
 
-            var server = new McpServer
+            var server = new Domain.Entities.McpServer
             {
                 Id = serverId,
                 Name = "Test Server",
@@ -177,7 +177,7 @@ namespace MCPVault.Core.Tests.MCP
             var userId = Guid.NewGuid();
             var orgId = Guid.NewGuid();
 
-            var server = new McpServer
+            var server = new Domain.Entities.McpServer
             {
                 Id = serverId,
                 IsActive = true,
@@ -206,7 +206,7 @@ namespace MCPVault.Core.Tests.MCP
             var orgId = Guid.NewGuid();
             var differentOrgId = Guid.NewGuid();
 
-            var server = new McpServer
+            var server = new Domain.Entities.McpServer
             {
                 Id = serverId,
                 IsActive = true,
@@ -234,7 +234,7 @@ namespace MCPVault.Core.Tests.MCP
             var userId = Guid.NewGuid();
             var orgId = Guid.NewGuid();
 
-            var server = new McpServer
+            var server = new Domain.Entities.McpServer
             {
                 Id = serverId,
                 Name = "Rate Limited Server",

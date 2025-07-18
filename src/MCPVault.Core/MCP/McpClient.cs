@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MCPVault.Core.Interfaces;
+using MCPVault.Core.MCP.Models;
 
 namespace MCPVault.Core.MCP
 {
@@ -19,6 +21,8 @@ namespace MCPVault.Core.MCP
         private HttpClient? _httpClient;
         private string? _serverUrl;
         private int _requestId = 0;
+        private McpConnectionInfo? _connectionInfo;
+        private McpCredentials? _credentials;
 
         public bool IsConnected { get; private set; }
 
@@ -379,6 +383,121 @@ namespace MCPVault.Core.MCP
         private string GetNextRequestId()
         {
             return (++_requestId).ToString();
+        }
+
+        public void ConfigureConnection(McpConnectionInfo connectionInfo, McpCredentials? credentials = null)
+        {
+            _connectionInfo = connectionInfo;
+            _credentials = credentials;
+
+            // Create new HTTP client with configured connection info
+            _httpClient = _httpClientFactory.CreateClient("MCP");
+            
+            var uriBuilder = new UriBuilder
+            {
+                Scheme = connectionInfo.Protocol,
+                Host = new Uri(connectionInfo.ServerUrl).Host,
+                Port = connectionInfo.Port ?? (connectionInfo.UseSsl ? 443 : 80),
+                Path = connectionInfo.BasePath ?? ""
+            };
+            
+            _httpClient.BaseAddress = uriBuilder.Uri;
+            _httpClient.Timeout = TimeSpan.FromSeconds(connectionInfo.TimeoutSeconds);
+
+            // Configure authentication
+            if (credentials != null)
+            {
+                ConfigureAuthentication(_httpClient, credentials);
+            }
+        }
+
+        public async Task<McpToolResponse> SendRequestAsync(McpToolRequest request)
+        {
+            if (_httpClient == null && _connectionInfo != null)
+            {
+                ConfigureConnection(_connectionInfo, _credentials);
+            }
+
+            if (_httpClient == null)
+            {
+                throw new InvalidOperationException("Client not configured. Call ConfigureConnection first.");
+            }
+
+            var mcpRequest = new McpRequest
+            {
+                Id = request.RequestId ?? GetNextRequestId(),
+                Method = $"tools/{request.ToolName}",
+                Params = request.Parameters ?? new Dictionary<string, object>()
+            };
+
+            // Add custom headers if provided
+            if (request.Headers != null)
+            {
+                foreach (var header in request.Headers)
+                {
+                    _httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
+            }
+
+            var startTime = DateTime.UtcNow;
+
+            try
+            {
+                var response = await SendRequestAsync(mcpRequest);
+                
+                var toolResponse = new McpToolResponse
+                {
+                    Success = response.Error == null,
+                    Result = response.Result,
+                    Error = response.Error?.Message,
+                    ErrorCode = response.Error?.Code.ToString(),
+                    ExecutionTime = (long)(DateTime.UtcNow - startTime).TotalMilliseconds
+                };
+
+                return toolResponse;
+            }
+            catch (Exception ex)
+            {
+                return new McpToolResponse
+                {
+                    Success = false,
+                    Error = ex.Message,
+                    ErrorCode = "CLIENT_ERROR",
+                    ExecutionTime = (long)(DateTime.UtcNow - startTime).TotalMilliseconds
+                };
+            }
+        }
+
+        private void ConfigureAuthentication(HttpClient client, McpCredentials credentials)
+        {
+            client.DefaultRequestHeaders.Authorization = null;
+
+            if (!string.IsNullOrWhiteSpace(credentials.BearerToken))
+            {
+                client.DefaultRequestHeaders.Authorization = 
+                    new AuthenticationHeaderValue("Bearer", credentials.BearerToken);
+            }
+            else if (!string.IsNullOrWhiteSpace(credentials.ApiKey))
+            {
+                client.DefaultRequestHeaders.Add("X-API-Key", credentials.ApiKey);
+            }
+            else if (!string.IsNullOrWhiteSpace(credentials.ClientId) && 
+                     !string.IsNullOrWhiteSpace(credentials.ClientSecret))
+            {
+                var authValue = Convert.ToBase64String(
+                    Encoding.UTF8.GetBytes($"{credentials.ClientId}:{credentials.ClientSecret}"));
+                client.DefaultRequestHeaders.Authorization = 
+                    new AuthenticationHeaderValue("Basic", authValue);
+            }
+
+            // Add custom headers
+            if (credentials.CustomHeaders != null)
+            {
+                foreach (var header in credentials.CustomHeaders)
+                {
+                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
+            }
         }
     }
 }

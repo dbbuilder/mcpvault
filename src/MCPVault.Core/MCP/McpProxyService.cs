@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MCPVault.Core.Interfaces;
 using MCPVault.Core.MCP.Models;
+using MCPVault.Core.MCP.Mappers;
 using MCPVault.Domain.Entities;
 using System.Collections.Concurrent;
 
@@ -17,7 +18,7 @@ namespace MCPVault.Core.MCP
     public class McpProxyService : IMcpProxyService
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IMcpServerRepository _mcpServerRepository;
+        private readonly Domain.Interfaces.IMcpServerRepository _mcpServerRepository;
         private readonly IKeyVaultService _keyVaultService;
         private readonly IAuditService _auditService;
         private readonly ILogger<McpProxyService> _logger;
@@ -25,7 +26,7 @@ namespace MCPVault.Core.MCP
 
         public McpProxyService(
             IHttpClientFactory httpClientFactory,
-            IMcpServerRepository mcpServerRepository,
+            Domain.Interfaces.IMcpServerRepository mcpServerRepository,
             IKeyVaultService keyVaultService,
             IAuditService auditService,
             ILogger<McpProxyService> logger)
@@ -48,11 +49,13 @@ namespace MCPVault.Core.MCP
             try
             {
                 // Get server details first
-                var server = await _mcpServerRepository.GetByIdAsync(request.ServerId);
-                if (server == null)
+                var domainServer = await _mcpServerRepository.GetByIdAsync(request.ServerId);
+                if (domainServer == null)
                 {
                     throw new NotFoundException($"MCP server {request.ServerId} not found");
                 }
+                
+                var server = McpServerMapper.ToCoreModel(domainServer);
 
                 if (!server.IsActive)
                 {
@@ -117,13 +120,15 @@ namespace MCPVault.Core.MCP
             {
                 throw new NotFoundException($"MCP server {serverId} not found");
             }
+            
+            var coreServer = McpServerMapper.ToCoreModel(server);
 
-            if (server.OrganizationId != organizationId)
+            if (coreServer.OrganizationId != organizationId)
             {
                 throw new UnauthorizedException("Access denied to this server");
             }
 
-            var allCapabilities = JsonSerializer.Deserialize<List<string>>(server.Capabilities ?? "[]") ?? new List<string>();
+            var allCapabilities = coreServer.Capabilities?.AllowedTools ?? new List<string>();
             
             // Filter capabilities based on user permissions
             var allowedCapabilities = allCapabilities
@@ -132,10 +137,10 @@ namespace MCPVault.Core.MCP
 
             return new McpServerCapabilities
             {
-                ServerId = server.Id,
-                ServerName = server.Name,
+                ServerId = coreServer.Id,
+                ServerName = coreServer.Name,
                 AllowedTools = allowedCapabilities,
-                LastUpdated = server.UpdatedAt
+                LastUpdated = coreServer.UpdatedAt
             };
         }
 
@@ -146,11 +151,13 @@ namespace MCPVault.Core.MCP
         {
             try
             {
-                var server = await _mcpServerRepository.GetByIdAsync(request.ServerId);
-                if (server == null)
+                var domainServer = await _mcpServerRepository.GetByIdAsync(request.ServerId);
+                if (domainServer == null)
                 {
                     return false;
                 }
+                
+                var server = McpServerMapper.ToCoreModel(domainServer);
 
                 // Validate organization access
                 if (server.OrganizationId != organizationId)
@@ -181,14 +188,14 @@ namespace MCPVault.Core.MCP
         }
 
         private async Task<McpToolResponse> ProxyRequestAsync(
-            McpServer server, 
+            Core.MCP.Models.McpServer server, 
             McpToolRequest request, 
             McpCredentials credentials)
         {
             var httpClient = _httpClientFactory.CreateClient("MCP");
             
             // Configure request
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{server.ServerUrl}/execute/{request.ToolName}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{server.ConnectionInfo.ServerUrl}/execute/{request.ToolName}");
             
             // Add authentication
             if (!string.IsNullOrEmpty(credentials.BearerToken))
@@ -233,12 +240,12 @@ namespace MCPVault.Core.MCP
             return response;
         }
 
-        private async Task CheckRateLimitAsync(McpServer server, Guid userId)
+        private async Task CheckRateLimitAsync(Core.MCP.Models.McpServer server, Guid userId)
         {
-            var config = JsonSerializer.Deserialize<Dictionary<string, object>>(server.Configuration ?? "{}") ?? new Dictionary<string, object>();
+            var config = server.Metadata ?? new Dictionary<string, string>();
             
-            if (config.TryGetValue("rateLimitPerMinute", out var rateLimitObj) && 
-                int.TryParse(rateLimitObj.ToString(), out var rateLimit))
+            if (config.TryGetValue("rateLimitPerMinute", out var rateLimitStr) && 
+                int.TryParse(rateLimitStr, out var rateLimit))
             {
                 var key = $"{server.Id}:{userId}";
                 var now = DateTime.UtcNow;
