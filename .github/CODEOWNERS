@@ -1,0 +1,28 @@
+# MCPVault Code Owners
+# These owners will be the default owners for everything in the repo
+
+# Global owners
+* @mcpvault/developers
+
+# Documentation
+*.md @mcpvault/documentation-team @mcpvault/developers
+/docs/ @mcpvault/documentation-team
+
+# CI/CD
+/.github/ @mcpvault/devops @mcpvault/developers
+/scripts/ @mcpvault/devops @mcpvault/developers
+Dockerfile @mcpvault/devops @mcpvault/developers
+docker-compose.yml @mcpvault/devops @mcpvault/developers
+
+# Database
+/dbbuilder/ @mcpvault/database-team @mcpvault/developers
+*.sql @mcpvault/database-team
+
+# Security-sensitive files
+/src/MCPVault.Core/Authentication/ @mcpvault/security-team @mcpvault/developers
+/src/MCPVault.Infrastructure/Security/ @mcpvault/security-team @mcpvault/developers
+**/appsettings*.json @mcpvault/security-team @mcpvault/devops
+
+# Architecture
+/src/MCPVault.Domain/ @mcpvault/architects @mcpvault/developers
+/src/MCPVault.Core/ @mcpvault/architects @mcpvault/developers
