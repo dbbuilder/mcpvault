@@ -1,8 +1,24 @@
+using MCPVault.Core.Authentication;
+using MCPVault.Core.Configuration;
+using MCPVault.Core.Interfaces;
+using MCPVault.Infrastructure.Database;
+using MCPVault.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configuration
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
+// Infrastructure
+builder.Services.AddScoped<IDbConnection, PostgreSqlConnection>();
+builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+
+// Core services
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 var app = builder.Build();
 
