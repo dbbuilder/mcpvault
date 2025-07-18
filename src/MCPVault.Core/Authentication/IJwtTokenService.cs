@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using MCPVault.Domain.Entities;
@@ -10,6 +11,9 @@ namespace MCPVault.Core.Authentication
         Task<TokenResult> GenerateTokenAsync(User user, string[] roles);
         Task<TokenValidationResult> ValidateTokenAsync(string token);
         Task<TokenResult?> RefreshTokenAsync(string refreshToken, Guid userId);
+        string GenerateToken(Guid userId, string email, Guid organizationId);
+        (bool isValid, Dictionary<string, string> claims) ValidateToken(string token);
+        string GenerateRefreshToken();
     }
 
     public class TokenResult

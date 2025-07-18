@@ -1,7 +1,9 @@
 using MCPVault.Core.Authentication;
+using MCPVault.Core.Authorization;
 using MCPVault.Core.Configuration;
 using MCPVault.Core.Interfaces;
 using MCPVault.Core.MCP;
+using MCPVault.Core.Services;
 using MCPVault.Infrastructure.Database;
 using MCPVault.Infrastructure.Repositories;
 
@@ -13,14 +15,21 @@ builder.Services.AddSwaggerGen();
 
 // Configuration
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.Configure<AuthenticationSettings>(builder.Configuration.GetSection("Authentication"));
 
 // Infrastructure
 builder.Services.AddScoped<IDbConnection, PostgreSqlConnection>();
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 
 // Core services
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IMcpProxyService, McpProxyService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IMfaService, MfaService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 
 // HttpClient
 builder.Services.AddHttpClient("MCP", client =>

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -63,7 +65,7 @@ namespace MCPVault.Core.Authentication
             var token = _tokenHandler.CreateToken(tokenDescriptor);
             var accessToken = _tokenHandler.WriteToken(token);
 
-            var refreshToken = GenerateRefreshToken();
+            var refreshToken = GenerateRefreshTokenPrivate();
 
             var result = new TokenResult
             {
@@ -137,7 +139,75 @@ namespace MCPVault.Core.Authentication
             return await GenerateTokenAsync(user, roles);
         }
 
-        private string GenerateRefreshToken()
+        public string GenerateToken(Guid userId, string email, Guid organizationId)
+        {
+            var key = Encoding.UTF8.GetBytes(_jwtSettings.SecretKey);
+            var signingKey = new SymmetricSecurityKey(key);
+
+            var now = DateTime.UtcNow;
+            var expires = _jwtSettings.ExpirationMinutes > 0 
+                ? now.AddMinutes(_jwtSettings.ExpirationMinutes) 
+                : now.AddSeconds(1);
+
+            var claims = new[]
+            {
+                new Claim("sub", userId.ToString()),
+                new Claim("email", email),
+                new Claim("org", organizationId.ToString()),
+                new Claim("iat", new DateTimeOffset(now).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                NotBefore = now,
+                Expires = expires,
+                Issuer = _jwtSettings.Issuer,
+                Audience = _jwtSettings.Audience,
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = _tokenHandler.CreateToken(tokenDescriptor);
+            return _tokenHandler.WriteToken(token);
+        }
+
+        public (bool isValid, Dictionary<string, string> claims) ValidateToken(string token)
+        {
+            try
+            {
+                var key = Encoding.UTF8.GetBytes(_jwtSettings.SecretKey);
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = _jwtSettings.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = _jwtSettings.Audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                var principal = _tokenHandler.ValidateToken(token, validationParameters, out _);
+                var claims = principal.Claims.ToDictionary(c => c.Type, c => c.Value);
+                
+                return (true, claims);
+            }
+            catch
+            {
+                return (false, new Dictionary<string, string>());
+            }
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        private string GenerateRefreshTokenPrivate()
         {
             var randomNumber = new byte[32];
             using var rng = RandomNumberGenerator.Create();
